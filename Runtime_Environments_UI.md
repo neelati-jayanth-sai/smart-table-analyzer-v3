@@ -181,7 +181,7 @@ Apache Iceberg
 Spark SQL
 ```
 
-STA runs as an application service and connects to the configured IOMETE environment.
+STA runs as an application service and connects to the configured IOMETE environment through Spark Connect. Production does not use direct Iceberg/PyIceberg catalog access; all table and metadata access goes through IOMETE/Spark.
 
 ## Production responsibilities
 
@@ -218,9 +218,9 @@ Example logical configuration:
 ```text
 STA_ENV=production
 
-IOMETE_ENDPOINT=...
+IOMETE_ENDPOINT=...        # Spark Connect endpoint
 IOMETE_CATALOG=...
-IOMETE_TOKEN=...
+IOMETE_TOKEN=...           # IOMETE personal access token / deployment secret
 IOMETE_DEFAULT_NAMESPACE=...
 ```
 
@@ -248,7 +248,7 @@ knowledge
 
 # 7. Production Query Execution
 
-Production query tools use reviewed Spark/IOMETE-compatible SQL.
+Production query tools use reviewed Spark/IOMETE-compatible SQL executed through Spark Connect. They do not use PyIceberg, DuckDB, or direct Iceberg catalog clients in production.
 
 Example:
 
@@ -257,7 +257,7 @@ get_file_layout
     ↓
 queries/iomete/file_layout.sql
     ↓
-IOMETE/Spark
+IOMETE/Spark Connect
     ↓
 normalized result
     ↓

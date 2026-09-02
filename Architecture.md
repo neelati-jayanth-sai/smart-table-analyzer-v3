@@ -150,8 +150,8 @@ STA does not:
 | API | FastAPI |
 | Agent runtime | Pydantic AI |
 | Data contracts | Pydantic v2 |
-| Iceberg metadata | PyIceberg where suitable |
-| Production query execution | Spark SQL / IOMETE adapter |
+| Iceberg metadata | Production: IOMETE/Spark SQL only (DESCRIBE/SHOW plus metadata tables; no PyIceberg/catalog client); Local: PyIceberg where suitable |
+| Production query execution | IOMETE through Spark Connect using reviewed Spark SQL templates |
 | Lightweight local analysis | DuckDB where useful |
 | Runtime/result persistence | SQLite initially |
 | Large result payloads | Filesystem or object storage when necessary |
@@ -186,7 +186,7 @@ flowchart TD
     A --> RR[Read Stored Result]
 
     QT --> QR[Shared QueryRunner]
-    QR --> DB[Iceberg / IOMETE / Spark]
+    QR --> DB[Production: IOMETE via Spark Connect<br/>Local: PyIceberg / DuckDB]
     DB --> RS[Result Store]
     RS --> REF[Return Result Reference]
     REF --> A
@@ -319,7 +319,7 @@ Purpose:
 
 > Give the Investigator enough structural understanding to make good decisions without sending a huge DDL or immediately scanning table data.
 
-Prefer Iceberg metadata directly. Textual DDL is fallback/reference when structured metadata is unavailable.
+Prefer structured Iceberg metadata over table scans. In production this metadata is accessed only through IOMETE/Spark Connect using reviewed Spark SQL metadata queries (DESCRIBE/SHOW plus metadata tables); direct PyIceberg/catalog access is local-only. Textual DDL is fallback/reference when structured metadata is unavailable.
 
 Preserve:
 
@@ -513,7 +513,7 @@ flowchart LR
     T --> P[Validate Parameters]
     P --> Q[Fixed Query Template]
     Q --> R[Shared QueryRunner]
-    R --> DB[Iceberg / IOMETE]
+    R --> DB[Production: IOMETE via Spark Connect<br/>Local: PyIceberg / DuckDB]
     DB --> S[Result Store]
     S --> ID[R017]
     ID --> A
