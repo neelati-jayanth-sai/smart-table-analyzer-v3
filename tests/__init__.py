@@ -1,0 +1,1 @@
+"""Smart Table Analyzer test suite (unit, integration, contract, e2e)."""

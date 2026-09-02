@@ -1,0 +1,29 @@
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+
+# SQLite / runtime artifacts
+*.sqlite3
+*.db
+*.log
+.pytest_cache/
+
+# Pi local agent tooling
+.pi/
+skills-lock.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store

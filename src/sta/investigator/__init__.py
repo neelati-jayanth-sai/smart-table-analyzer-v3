@@ -1,0 +1,71 @@
+"""Investigator: Pydantic AI agent seam, prompts, and report contract
+(Architecture.md #22-#32). The model owns interpretation; STA provides only
+deterministic measurements, stored results, and curated knowledge."""
+
+from sta.investigator.agent import (
+    INVESTIGATOR_TOOL_NAMES,
+    MODEL_ENV_VAR,
+    OLLAMA_LOCAL_MODEL_NAME,
+    OLLAMA_MODEL_NAME,
+    InvestigationDeps,
+    InvestigationSession,
+    InvestigationTools,
+    Investigator,
+    InvestigatorNotConfiguredError,
+    PydanticAiInvestigator,
+    CallbackInvestigator,
+    ReportRejectedError,
+    create_investigator,
+)
+from sta.investigator.ollama_cloud_native_model import OllamaCloudNativeModel
+from sta.investigator.prompt import SYSTEM_PROMPT, build_user_prompt
+from sta.investigator.report import (
+    DesignRecommendationStatus,
+    Finding,
+    FindingConfidence,
+    FutureTableDesign,
+    InvestigationReport,
+    OverallStatus,
+    PropertyRecommendation,
+    RemediationAction,
+    ReportReferenceValidator,
+    ReportValidationError,
+    Severity,
+    SpecRecommendation,
+    collect_knowledge_refs,
+    collect_result_refs,
+)
+
+__all__ = [
+    "INVESTIGATOR_TOOL_NAMES",
+    "MODEL_ENV_VAR",
+    "OLLAMA_LOCAL_MODEL_NAME",
+    "OLLAMA_MODEL_NAME",
+    "CallbackInvestigator",
+    "DesignRecommendationStatus",
+    "Finding",
+    "FindingConfidence",
+    "FutureTableDesign",
+    "InvestigationDeps",
+    "InvestigationReport",
+    "InvestigationSession",
+    "InvestigationTools",
+    "Investigator",
+    "InvestigatorNotConfiguredError",
+    "InvestigationReport",
+    "OllamaCloudNativeModel",
+    "OverallStatus",
+    "PropertyRecommendation",
+    "PydanticAiInvestigator",
+    "RemediationAction",
+    "ReportRejectedError",
+    "ReportReferenceValidator",
+    "ReportValidationError",
+    "SYSTEM_PROMPT",
+    "Severity",
+    "SpecRecommendation",
+    "build_user_prompt",
+    "collect_knowledge_refs",
+    "collect_result_refs",
+    "create_investigator",
+]

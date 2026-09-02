@@ -1,0 +1,1 @@
+"""End-to-end tests: the real investigator loop over the full run lifecycle."""

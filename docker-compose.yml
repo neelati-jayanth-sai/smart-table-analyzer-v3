@@ -1,0 +1,72 @@
+# Minimal local development stack for Smart Table Analyzer.
+#
+# Runtime_Environments_UI.md §9, §51-§53.
+#
+# Services:
+#   - minio:        S3-compatible object storage for Iceberg data files.
+#   - minio-init:   one-shot bucket creation helper.
+#   - iceberg-rest: PyIceberg-compatible Iceberg REST catalog (no Spark).
+#
+# Usage:
+#     docker compose up -d
+#     python scripts/seed_local.py
+#     uvicorn sta.app.api:app --reload
+#
+# Reset:
+#     python scripts/reset_local.py
+#
+# The credentials below are local-only defaults. Never reuse them for
+# production or commit real secrets.
+
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: sta-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  minio-init:
+    image: minio/mc:latest
+    container_name: sta-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+        set -e;
+        mc alias set local http://minio:9000 minioadmin minioadmin;
+        mc mb --ignore-existing local/sta-warehouse;
+        echo 'MinIO bucket ready';
+      "
+
+  iceberg-rest:
+    image: tabulario/iceberg-rest:1.6.0
+    container_name: sta-iceberg-rest
+    ports:
+      - "8181:8181"
+    environment:
+      AWS_ACCESS_KEY_ID: minioadmin
+      AWS_SECRET_ACCESS_KEY: minioadmin
+      AWS_REGION: us-east-1
+      CATALOG_WAREHOUSE: s3://sta-warehouse/
+      CATALOG_IO__IMPL: org.apache.iceberg.aws.s3.S3FileIO
+      CATALOG_S3_ENDPOINT: http://minio:9000
+      CATALOG_S3_PATH__STYLE__ACCESS: "true"
+    depends_on:
+      minio-init:
+        condition: service_completed_successfully
+
+volumes:
+  minio-data:

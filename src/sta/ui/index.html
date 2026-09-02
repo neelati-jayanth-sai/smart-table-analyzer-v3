@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Table Analyzer</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="app-header">
+  <h1>Smart Table Analyzer</h1>
+  <span id="env-badge" class="badge" data-environment="">…</span>
+</header>
+
+<main>
+  <section id="submit-panel" class="card">
+    <form id="run-form">
+      <label for="table-name">Iceberg table</label>
+      <div class="row">
+        <input id="table-name" name="table_name" type="text"
+               placeholder="catalog.schema.table" autocomplete="off"
+               spellcheck="false" required>
+        <button id="analyze-btn" type="submit">Analyze</button>
+        <button id="cancel-btn" type="button" hidden>Cancel</button>
+      </div>
+      <p id="form-error" class="error" hidden></p>
+    </form>
+  </section>
+
+  <section id="run-panel" class="card" hidden>
+    <div class="run-summary">
+      <span id="run-table" class="run-table"></span>
+      <span id="run-snapshot" class="muted"></span>
+      <span id="run-status" class="status"></span>
+      <span id="run-phase" class="muted"></span>
+    </div>
+
+    <ol id="timeline" class="timeline">
+      <li data-step="table">Table resolved</li>
+      <li data-step="context">TableContext ready</li>
+      <li data-step="investigation">Investigation</li>
+      <li data-step="report">Report</li>
+    </ol>
+
+    <h2>Activity</h2>
+    <ul id="activity" class="activity" aria-live="polite"></ul>
+  </section>
+
+  <section id="report-panel" class="card" hidden>
+    <h2>Report</h2>
+    <div id="report"></div>
+  </section>
+</main>
+
+<div id="result-dialog" class="dialog-backdrop" hidden>
+  <div class="dialog card" role="dialog" aria-modal="true" aria-labelledby="result-title">
+    <div class="dialog-header">
+      <h2 id="result-title">Result</h2>
+      <button id="result-close" type="button" aria-label="Close">×</button>
+    </div>
+    <div id="result-detail"></div>
+  </div>
+</div>
+
+<footer class="muted">
+  Every measurement is stored evidence (Rxxx). The UI opens results; it never interprets them.
+</footer>
+
+<script src="/app.js"></script>
+</body>
+</html>
